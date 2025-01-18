@@ -40,4 +40,43 @@ pub use install::Install;
 pub use metadata::Metadata;
 pub use run::Run;
 pub use rustc::Rustc;
+use std::ffi::OsStr;
+use std::ffi::OsString;
 pub use test::Test;
+
+#[derive(Clone, Debug, Default)]
+pub struct CargoOptions {
+    inner: Vec<OsString>,
+}
+
+impl CargoOptions {
+    pub fn arg<Arg: AsRef<OsStr>>(&mut self, arg: Arg) -> &mut Self {
+        self.inner.push(arg.as_ref().to_os_string());
+        self
+    }
+
+    pub fn args<Args: IntoIterator<Item = Arg>, Arg: AsRef<OsStr>>(
+        &mut self,
+        args: Args,
+    ) -> &mut Self {
+        self.inner
+            .extend(args.into_iter().map(|arg| arg.as_ref().to_os_string()));
+        self
+    }
+
+    pub fn into_string(self) -> Option<String> {
+        self.into_iter()
+            .map(|os| os.into_string().ok())
+            .collect::<Option<Vec<String>>>()
+            .map(|v| v.join(" "))
+    }
+}
+
+impl std::iter::IntoIterator for CargoOptions {
+    type Item = OsString;
+    type IntoIter = std::vec::IntoIter<OsString>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.inner.into_iter()
+    }
+}

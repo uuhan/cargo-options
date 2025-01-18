@@ -7,7 +7,7 @@ pub use tokio::process::Command;
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
-use crate::heading;
+use crate::{heading, CargoOptions};
 use clap::{ArgAction, Parser};
 
 /// common cargo options
@@ -137,8 +137,8 @@ pub struct CommonOptions {
 }
 
 impl CommonOptions {
-    /// Apply options to `Command`
-    pub fn apply(&self, cmd: &mut Command) {
+    /// Apply options to `CargoOptions`
+    pub fn apply_options(&self, cmd: &mut CargoOptions) {
         if self.quiet {
             cmd.arg("--quiet");
         }
@@ -207,6 +207,10 @@ impl CommonOptions {
                 cmd.arg(format!("--timings={}", timings.join(",")));
             }
         }
+    }
+
+    pub(crate) fn cargo_options() -> CargoOptions {
+        CargoOptions::default()
     }
 
     pub(crate) fn cargo_command() -> Command {

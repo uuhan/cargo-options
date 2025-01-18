@@ -7,7 +7,7 @@ use clap::{ArgAction, Parser};
 use serde::{Deserialize, Serialize};
 
 use crate::common::{Command, CommonOptions};
-use crate::heading;
+use crate::{heading, CargoOptions};
 
 /// Run a binary or example of the local package
 #[derive(Clone, Debug, Default, Parser)]
@@ -83,12 +83,11 @@ pub struct Run {
 }
 
 impl Run {
-    /// Build a `cargo run` command
-    pub fn command(&self) -> Command {
-        let mut cmd = CommonOptions::cargo_command();
-        cmd.arg("run");
+    /// Build a `cargo run` options
+    pub fn options(&self) -> CargoOptions {
+        let mut cmd = CommonOptions::cargo_options();
 
-        self.common.apply(&mut cmd);
+        self.common.apply_options(&mut cmd);
 
         if let Some(path) = self.manifest_path.as_ref() {
             cmd.arg("--manifest-path").arg(path);
@@ -115,6 +114,15 @@ impl Run {
             cmd.arg("--");
             cmd.args(&self.args);
         }
+
+        cmd
+    }
+
+    /// Build a `cargo run` command
+    pub fn command(&self) -> Command {
+        let mut cmd = CommonOptions::cargo_command();
+        cmd.arg("run");
+        cmd.args(self.options());
 
         cmd
     }

@@ -6,7 +6,7 @@ use std::path::PathBuf;
 use serde::{Deserialize, Serialize};
 
 use crate::common::{Command, CommonOptions};
-use crate::heading;
+use crate::{heading, CargoOptions};
 
 /// `cargo check` options which are also a subset of `cargo clippy`
 #[derive(Clone, Debug, Default, Parser)]
@@ -123,7 +123,7 @@ pub struct CheckOptions {
 }
 
 impl CheckOptions {
-    pub fn apply(&self, cmd: &mut Command) {
+    pub fn apply_options(&self, cmd: &mut CargoOptions) {
         for pkg in &self.packages {
             cmd.arg("--package").arg(pkg);
         }
@@ -211,13 +211,12 @@ pub struct Check {
 }
 
 impl Check {
-    /// Build a `cargo check` command
-    pub fn command(&self) -> Command {
-        let mut cmd = CommonOptions::cargo_command();
-        cmd.arg("check");
+    /// Build a `cargo check` options
+    pub fn options(&self) -> CargoOptions {
+        let mut cmd = CommonOptions::cargo_options();
 
-        self.common.apply(&mut cmd);
-        self.check.apply(&mut cmd);
+        self.common.apply_options(&mut cmd);
+        self.check.apply_options(&mut cmd);
 
         if let Some(path) = self.manifest_path.as_ref() {
             cmd.arg("--manifest-path").arg(path);
@@ -231,6 +230,14 @@ impl Check {
         if self.unit_graph {
             cmd.arg("--unit-graph");
         }
+
+        cmd
+    }
+    /// Build a `cargo check` command
+    pub fn command(&self) -> Command {
+        let mut cmd = CommonOptions::cargo_command();
+        cmd.arg("check");
+        cmd.args(self.options());
 
         cmd
     }

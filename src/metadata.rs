@@ -5,7 +5,7 @@ use std::path::PathBuf;
 use serde::{Deserialize, Serialize};
 
 use crate::common::{Command, CommonOptions};
-use crate::heading;
+use crate::{heading, CargoOptions};
 
 /// Output the resolved dependencies of a package,
 /// the concrete used versions including overrides,
@@ -101,10 +101,10 @@ pub struct Metadata {
 }
 
 impl Metadata {
-    /// Build a `cargo metadata` command
-    pub fn command(&self) -> Command {
-        let mut cmd = CommonOptions::cargo_command();
-        cmd.arg("metadata");
+    /// Build a `cargo metadata` options
+    pub fn options(&self) -> CargoOptions {
+        let mut cmd = CommonOptions::cargo_options();
+
         if self.quiet {
             cmd.arg("--quiet");
         }
@@ -150,6 +150,14 @@ impl Metadata {
         for flag in &self.unstable_flags {
             cmd.arg("-Z").arg(flag);
         }
+        cmd
+    }
+
+    /// Build a `cargo metadata` command
+    pub fn command(&self) -> Command {
+        let mut cmd = CommonOptions::cargo_command();
+        cmd.arg("metadata");
+        cmd.args(self.options());
         cmd
     }
 }
