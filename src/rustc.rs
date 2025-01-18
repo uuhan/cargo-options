@@ -6,7 +6,7 @@ use std::path::PathBuf;
 use serde::{Deserialize, Serialize};
 
 use crate::common::{Command, CommonOptions};
-use crate::{heading, CargoOptions};
+use crate::{heading, CargoOptions, CargoOptionsExt};
 
 /// Compile a package, and pass extra options to the compiler
 #[derive(Clone, Debug, Default, Parser)]
@@ -146,9 +146,9 @@ pub struct Rustc {
     pub args: Vec<String>,
 }
 
-impl Rustc {
+impl CargoOptionsExt for Rustc {
     /// Build a `cargo rustc` options
-    pub fn options(&self) -> CargoOptions {
+    fn options(&self) -> CargoOptions {
         let mut cmd = CommonOptions::cargo_options();
 
         self.common.apply_options(&mut cmd);
@@ -213,6 +213,9 @@ impl Rustc {
 
         cmd
     }
+}
+
+impl Rustc {
     /// Build a `cargo rustc` command
     pub fn command(&self) -> Command {
         let mut cmd = CommonOptions::cargo_command();

@@ -6,7 +6,7 @@ use std::path::PathBuf;
 use serde::{Deserialize, Serialize};
 
 use crate::common::{Command, CommonOptions};
-use crate::{heading, CargoOptions};
+use crate::{heading, CargoOptions, CargoOptionsExt};
 
 /// Compile a local package and all of its dependencies
 #[derive(Clone, Debug, Default, Parser)]
@@ -161,9 +161,9 @@ pub struct Build {
     pub future_incompat_report: bool,
 }
 
-impl Build {
+impl CargoOptionsExt for Build {
     /// Build a `cargo build` options
-    pub fn options(&self) -> CargoOptions {
+    fn options(&self) -> CargoOptions {
         let mut cmd = CommonOptions::cargo_options();
 
         self.common.apply_options(&mut cmd);
@@ -234,7 +234,9 @@ impl Build {
 
         cmd
     }
+}
 
+impl Build {
     /// Build a `cargo build` command
     pub fn command(&self) -> Command {
         let mut cmd = CommonOptions::cargo_command();

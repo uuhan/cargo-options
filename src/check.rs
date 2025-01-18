@@ -6,7 +6,7 @@ use std::path::PathBuf;
 use serde::{Deserialize, Serialize};
 
 use crate::common::{Command, CommonOptions};
-use crate::{heading, CargoOptions};
+use crate::{heading, CargoOptions, CargoOptionsExt};
 
 /// `cargo check` options which are also a subset of `cargo clippy`
 #[derive(Clone, Debug, Default, Parser)]
@@ -210,9 +210,8 @@ pub struct Check {
     pub unit_graph: bool,
 }
 
-impl Check {
-    /// Build a `cargo check` options
-    pub fn options(&self) -> CargoOptions {
+impl CargoOptionsExt for Check {
+    fn options(&self) -> CargoOptions {
         let mut cmd = CommonOptions::cargo_options();
 
         self.common.apply_options(&mut cmd);
@@ -233,6 +232,9 @@ impl Check {
 
         cmd
     }
+}
+
+impl Check {
     /// Build a `cargo check` command
     pub fn command(&self) -> Command {
         let mut cmd = CommonOptions::cargo_command();

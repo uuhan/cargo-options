@@ -44,6 +44,10 @@ use std::ffi::OsStr;
 use std::ffi::OsString;
 pub use test::Test;
 
+pub trait CargoOptionsExt {
+    fn options(&self) -> CargoOptions;
+}
+
 #[derive(Clone, Debug, Default)]
 pub struct CargoOptions {
     inner: Vec<OsString>,

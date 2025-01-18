@@ -7,7 +7,7 @@ use clap::{ArgAction, Parser};
 use serde::{Deserialize, Serialize};
 
 use crate::common::{Command, CommonOptions};
-use crate::{heading, CargoOptions};
+use crate::{heading, CargoOptions, CargoOptionsExt};
 
 /// Run a binary or example of the local package
 #[derive(Clone, Debug, Default, Parser)]
@@ -82,9 +82,9 @@ pub struct Run {
     pub args: Vec<String>,
 }
 
-impl Run {
+impl CargoOptionsExt for Run {
     /// Build a `cargo run` options
-    pub fn options(&self) -> CargoOptions {
+    fn options(&self) -> CargoOptions {
         let mut cmd = CommonOptions::cargo_options();
 
         self.common.apply_options(&mut cmd);
@@ -117,7 +117,9 @@ impl Run {
 
         cmd
     }
+}
 
+impl Run {
     /// Build a `cargo run` command
     pub fn command(&self) -> Command {
         let mut cmd = CommonOptions::cargo_command();

@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::check::CheckOptions;
 use crate::common::{Command, CommonOptions};
-use crate::{heading, CargoOptions};
+use crate::{heading, CargoOptions, CargoOptionsExt};
 
 /// Checks a package to catch common mistakes and improve your Rust code
 #[derive(Clone, Debug, Default, Parser)]
@@ -62,9 +62,9 @@ pub struct Clippy {
     pub args: Vec<String>,
 }
 
-impl Clippy {
+impl CargoOptionsExt for Clippy {
     /// Build a `cargo clippy` options
-    pub fn options(&self) -> CargoOptions {
+    fn options(&self) -> CargoOptions {
         let mut cmd = CommonOptions::cargo_options();
 
         self.common.apply_options(&mut cmd);
@@ -95,6 +95,9 @@ impl Clippy {
 
         cmd
     }
+}
+
+impl Clippy {
     /// Build a `cargo clippy` command
     pub fn command(&self) -> Command {
         let mut cmd = CommonOptions::cargo_command();

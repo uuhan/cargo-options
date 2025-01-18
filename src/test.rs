@@ -6,7 +6,7 @@ use std::path::PathBuf;
 use serde::{Deserialize, Serialize};
 
 use crate::common::{Command, CommonOptions};
-use crate::{heading, CargoOptions};
+use crate::{heading, CargoOptions, CargoOptionsExt};
 
 /// Execute all unit and integration tests and build examples of a local package
 #[derive(Clone, Debug, Default, Parser)]
@@ -176,9 +176,9 @@ pub struct Test {
     pub args: Vec<String>,
 }
 
-impl Test {
+impl CargoOptionsExt for Test {
     /// Build a `cargo test` options
-    pub fn options(&self) -> CargoOptions {
+    fn options(&self) -> CargoOptions {
         let mut cmd = CommonOptions::cargo_options();
 
         self.common.apply_options(&mut cmd);
@@ -257,7 +257,9 @@ impl Test {
 
         cmd
     }
+}
 
+impl Test {
     /// Build a `cargo test` command
     pub fn command(&self) -> Command {
         let mut cmd = CommonOptions::cargo_command();

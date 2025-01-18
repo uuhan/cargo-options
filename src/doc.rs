@@ -6,7 +6,7 @@ use std::path::PathBuf;
 use serde::{Deserialize, Serialize};
 
 use crate::common::{Command, CommonOptions};
-use crate::{heading, CargoOptions};
+use crate::{heading, CargoOptions, CargoOptionsExt};
 
 /// `cargo doc` options
 #[derive(Clone, Debug, Default, Parser)]
@@ -176,9 +176,9 @@ pub struct Doc {
     pub unit_graph: bool,
 }
 
-impl Doc {
+impl CargoOptionsExt for Doc {
     /// Build a `cargo doc` options
-    pub fn options(&self) -> CargoOptions {
+    fn options(&self) -> CargoOptions {
         let mut cmd = CommonOptions::cargo_options();
 
         self.common.apply_options(&mut cmd);
@@ -199,7 +199,9 @@ impl Doc {
 
         cmd
     }
+}
 
+impl Doc {
     /// Build a `cargo doc` options
     pub fn command(&self) -> Command {
         let mut cmd = CommonOptions::cargo_command();

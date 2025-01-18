@@ -6,7 +6,7 @@ use std::path::PathBuf;
 use serde::{Deserialize, Serialize};
 
 use crate::common::{Command, CommonOptions};
-use crate::{heading, CargoOptions};
+use crate::{heading, CargoOptions, CargoOptionsExt};
 
 /// Install a Rust binary. Default location is $HOME/.cargo/bin
 #[derive(Clone, Debug, Default, Parser)]
@@ -133,9 +133,9 @@ pub struct Install {
     pub crates: Vec<String>,
 }
 
-impl Install {
+impl CargoOptionsExt for Install {
     /// Build a `cargo install` options
-    pub fn options(&self) -> CargoOptions {
+    fn options(&self) -> CargoOptions {
         let mut cmd = CommonOptions::cargo_options();
 
         self.common.apply_options(&mut cmd);
@@ -195,6 +195,9 @@ impl Install {
 
         cmd
     }
+}
+
+impl Install {
     /// Build a `cargo install` command
     pub fn command(&self) -> Command {
         let mut cmd = CommonOptions::cargo_command();
