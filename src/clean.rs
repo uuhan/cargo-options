@@ -21,11 +21,18 @@ pub struct Clean {
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub common: CommonOptions,
 
-    #[arg(long = "doc")]
+    #[arg(
+        long = "doc",
+        help = "Whether or not to clean just the documentation directory"
+    )]
     #[cfg_attr(feature = "serde", serde(default))]
     pub doc: bool,
 
-    #[arg(short = 'n', long)]
+    #[arg(
+        short = 'n',
+        long,
+        help = "Display what would be deleted without deleting anything"
+    )]
     #[cfg_attr(feature = "serde", serde(default))]
     pub dry_run: bool,
 
