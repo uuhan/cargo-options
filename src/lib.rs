@@ -1,5 +1,6 @@
 mod build;
 mod check;
+mod clean;
 mod clippy;
 mod common;
 mod doc;
@@ -34,6 +35,7 @@ pub fn styles() -> clap::builder::Styles {
 pub use crate::clippy::Clippy;
 pub use build::Build;
 pub use check::Check;
+pub use clean::Clean;
 pub use common::CommonOptions;
 pub use doc::Doc;
 pub use install::Install;
