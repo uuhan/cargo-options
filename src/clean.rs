@@ -26,12 +26,12 @@ pub struct Clean {
     #[cfg_attr(feature = "serde", serde(default))]
     pub manifest_path: Option<PathBuf>,
 
-    /// Build artifacts in release mode, with optimizations
+    /// Clean artifacts in release mode, with optimizations
     #[arg(short = 'r', long, help_heading = heading::COMPILATION_OPTIONS)]
     #[cfg_attr(feature = "serde", serde(default))]
     pub release: bool,
 
-    /// Package to build (see `cargo help pkgid`)
+    /// Package to clean (see `cargo help pkgid`)
     #[arg(
         short = 'p',
         long = "package",
@@ -45,7 +45,7 @@ pub struct Clean {
 }
 
 impl CargoOptionsExt for Clean {
-    /// Build a `cargo build` options
+    /// Build a `cargo clean` options
     fn options(&self) -> CargoOptions {
         let mut cmd = CommonOptions::cargo_options();
 
@@ -66,10 +66,10 @@ impl CargoOptionsExt for Clean {
 }
 
 impl Clean {
-    /// Build a `cargo build` command
+    /// Build a `cargo clean` command
     pub fn command(&self) -> Command {
         let mut cmd = CommonOptions::cargo_command();
-        cmd.arg("build");
+        cmd.arg("clean");
 
         cmd.args(self.options());
 
