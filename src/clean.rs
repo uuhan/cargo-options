@@ -21,6 +21,14 @@ pub struct Clean {
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub common: CommonOptions,
 
+    #[arg(long = "doc")]
+    #[cfg_attr(feature = "serde", serde(default))]
+    pub doc: bool,
+
+    #[arg(short = 'n', long)]
+    #[cfg_attr(feature = "serde", serde(default))]
+    pub dry_run: bool,
+
     /// Path to Cargo.toml
     #[arg(long, value_name = "PATH", help_heading = heading::MANIFEST_OPTIONS)]
     #[cfg_attr(feature = "serde", serde(default))]
@@ -54,9 +62,19 @@ impl CargoOptionsExt for Clean {
         if let Some(path) = self.manifest_path.as_ref() {
             cmd.arg("--manifest-path").arg(path);
         }
+
+        if self.doc {
+            cmd.arg("--doc");
+        }
+
+        if self.dry_run {
+            cmd.arg("--dry-run");
+        }
+
         if self.release {
             cmd.arg("--release");
         }
+
         for pkg in &self.packages {
             cmd.arg("--package").arg(pkg);
         }
